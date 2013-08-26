@@ -1,0 +1,16 @@
+{
+  "name": "angular-tokens",
+  "description": "Angular directive for the tokens plugin",
+  "version": "0.1.0",
+  "homepage": "http://github.com/firstandthird/angular-tokens/",
+  "license": "MIT",
+  "copyright": "First + Third",
+  "main": "dist/angular-tokens.js",
+  "dependencies": {
+    "jquery": ">=1.8.3",
+    "angular": ">=1.0.7"
+  },
+  "devDependencies": {
+    "assert": "*"
+  }
+}
