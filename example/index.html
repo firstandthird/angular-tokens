@@ -3,12 +3,17 @@
   <head>
     <meta charset="utf-8" />
     <title>angular-tokens example</title>
-    <script src="../components/angular/angular.js"></script>
+    <link rel="stylesheet" type="text/css" href="../bower_components/tokens/lib/tokens.css">
+    <script src="../bower_components/angular/angular.js"></script>
     <script src="../dist/angular-tokens.js"></script>
+    <script src="../bower_components/jquery/jquery.min.js"></script>
+    <script src="../bower_components/fidel/dist/fidel.min.js"></script>
+    <script src="../bower_components/tokens/dist/tokens.min.js"></script>
     <script src="app.js"></script>
   </head>
   <body>
     <div ng-controller="MainController">
+      <input type="text" tokens tokens-suggestions="suggestions" tokens-add="addTest()" tokens-remove="removeTest()"/>
     </div>
   </body>
 </html>
