@@ -1,3 +1,4 @@
+
 /*!
  * angular-tokens - Angular directive for the tokens plugin
  * v0.1.0
@@ -19,13 +20,13 @@
             var $el = $(el);
 
             $el.tokens({source : scope.tokensSuggestions });
+            scope.tokens = $el.data('tokens');
 
             $el.on('add', scope.tokensAdd);
             $el.on('remove', scope.tokensRemove);
 
-            scope.$watch('tokensSuggestions',function(newValue, oldValue){
-              console.log('Mitsuu');
-              $el.data('tokens').source = scope.tokensSuggestions;
+            scope.$watch('tokensSuggestions',function(){
+              scope.tokens.source = scope.tokensSuggestions;
             },true);
           }
         };
