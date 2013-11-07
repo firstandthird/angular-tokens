@@ -11,11 +11,11 @@ var MainController = function($scope) {
   ];
 
   $scope.addTest = function(){
-    console.log('Added from the controller');
+    console.log('Added from the controller', $scope.selected);
   };
 
   $scope.removeTest = function(){
-    console.log('Removed from the controller');
+    console.log('Removed from the controller', $scope.selected);
   };
 
   $scope.addNew = function(){
