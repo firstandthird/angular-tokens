@@ -195,10 +195,11 @@
   $.Fidel = window.Fidel;
 
 })(jQuery);
+
 /*!
  * tokens - jQuery plugin that turns a text field into a tokenized autocomplete
- * v0.2.1
- * https://github.com/jgallen23/tokens/
+ * v0.2.4
+ * https://github.com/firstandthird/tokens/
  * copyright First + Third 2013
  * MIT License
 */
@@ -217,11 +218,11 @@
         return suggestion.toLowerCase().indexOf(queryLowerCase.toLowerCase()) !== -1;
       },
       query : function(query, callback){
-        var queryLower = query.toLowerCase();
+        var queryLower = query.toLowerCase(), self = this;
 
-        var suggestions = $.grep(this.source, this.proxy(function(suggestion){
-          return this.search(suggestion, query, queryLower);
-        }));
+        var suggestions = $.grep(this.source, function(suggestion){
+          return self.search(suggestion, query, queryLower);
+        });
 
         callback.apply(this,[suggestions]);
       },
@@ -306,7 +307,9 @@
     },
     _focusInput: function () {
       var self = this;
-      setTimeout(function(){ self.inputText.focus(); },10);
+      setTimeout(function(){
+        self.inputText.focus();
+      },10);
     },
     _onDeleteClick: function (e) {
       e.stopImmediatePropagation();
@@ -410,7 +413,7 @@
           this.suggestionsHolder.empty().append(html);
           this._showSuggestions();
         }
-        else {
+        else if (this.source.length) {
           this._addTextToSuggestions(this.texts['no-results']);
         }
       });
@@ -485,7 +488,7 @@
 
       this.suggestionsHolder.on('mouseover', listClass, this.proxy(this._onMouseOver,this));
       this.suggestionsHolder.on('mouseout', listClass, this.proxy(this._deactivateSuggestion,this));
-      this.suggestionsHolder.on('click', listClass, this.proxy(this._selectSuggestion,this));
+      this.suggestionsHolder.on('mousedown', listClass, this.proxy(this._selectSuggestion,this));
     },
     _getCloseAnchor: function () {
       return $('<span>').text(this.texts['close-text']).addClass(this.cssClasses['delete-anchor']);
@@ -540,7 +543,7 @@
       };
     },
     _showTypeSuggestion : function(){
-      if (this.showSuggestionOnFocus && ! this.suggestions.length){
+      if (this.showSuggestionOnFocus && !this.suggestions.length && this.source.length){
         this._addTextToSuggestions(this.texts['type-suggestions']);
       }
     },
@@ -617,15 +620,12 @@
             tokensRemove : '&'
           },
           link : function(scope, el){
-            var $el = $(el);
-            scope.tokensSuggestions = angular.isUndefined(scope.tokensSuggestions) ? [] : scope.tokensSuggestions;
-            scope.tokensSelected = angular.isUndefined(scope.tokensSelected) ? [] : scope.tokensSelected;
-            scope.tokensAdd = scope.tokensAdd || angular.noop;
-            scope.tokensRemove = scope.tokensRemove || angular.noop;
-
+            var $el = $(el),
+                addCallback = scope.tokensAdd || angular.noop,
+                removeCallback = scope.tokensRemove || angular.noop;
 
             $el.tokens({
-              source : scope.tokensSuggestions,
+              source : scope.tokensSuggestions || [],
               initValue : scope.tokensSelected
             });
             scope.tokens = $el.data('tokens');
@@ -654,7 +654,7 @@
                 scope.$apply(function(){
                   var index = scope.tokensSelected.indexOf(value);
                   scope.tokensSelected.splice(index,1);
-                  scope.tokensRemove.call(this,e,value);
+                  removeCallback.call(this,e,value);
                 });
               }
             });
@@ -663,7 +663,7 @@
               if (!scope.syncing){
                 scope.$apply(function(){
                   scope.tokensSelected.push(value);
-                  scope.tokensAdd.call(this,e,value);
+                  addCallback.call(this,e,value);
                 });
               }
             });
@@ -676,7 +676,7 @@
               }
             },true);
             scope.$watch('tokensSuggestions',function(){
-              scope.tokens.source = scope.tokensSuggestions;
+              scope.tokens.source = scope.tokensSuggestions || [];
             },true);
           }
         };

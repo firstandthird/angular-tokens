@@ -18,15 +18,12 @@
             tokensRemove : '&'
           },
           link : function(scope, el){
-            var $el = $(el);
-            scope.tokensSuggestions = angular.isUndefined(scope.tokensSuggestions) ? [] : scope.tokensSuggestions;
-            scope.tokensSelected = angular.isUndefined(scope.tokensSelected) ? [] : scope.tokensSelected;
-            scope.tokensAdd = scope.tokensAdd || angular.noop;
-            scope.tokensRemove = scope.tokensRemove || angular.noop;
-
+            var $el = $(el),
+                addCallback = scope.tokensAdd || angular.noop,
+                removeCallback = scope.tokensRemove || angular.noop;
 
             $el.tokens({
-              source : scope.tokensSuggestions,
+              source : scope.tokensSuggestions || [],
               initValue : scope.tokensSelected
             });
             scope.tokens = $el.data('tokens');
@@ -55,7 +52,7 @@
                 scope.$apply(function(){
                   var index = scope.tokensSelected.indexOf(value);
                   scope.tokensSelected.splice(index,1);
-                  scope.tokensRemove.call(this,e,value);
+                  removeCallback.call(this,e,value);
                 });
               }
             });
@@ -64,7 +61,7 @@
               if (!scope.syncing){
                 scope.$apply(function(){
                   scope.tokensSelected.push(value);
-                  scope.tokensAdd.call(this,e,value);
+                  addCallback.call(this,e,value);
                 });
               }
             });
@@ -77,7 +74,7 @@
               }
             },true);
             scope.$watch('tokensSuggestions',function(){
-              scope.tokens.source = scope.tokensSuggestions;
+              scope.tokens.source = scope.tokensSuggestions || [];
             },true);
           }
         };
