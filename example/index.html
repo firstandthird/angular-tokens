@@ -13,7 +13,7 @@
   </head>
   <body>
     <div ng-controller="MainController">
-      <input type="text" tokens tokens-suggestions="suggestions" tokens-add="addTest()" tokens-remove="removeTest()"/>
+      <input type="text" tokens ng-model="suggestions" tokens-add="addTest()" tokens-remove="removeTest()"/>
     </div>
   </body>
 </html>

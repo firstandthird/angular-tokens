@@ -12,7 +12,7 @@
         return {
           restrict: 'A',
           scope : {
-            tokensSuggestions : '=',
+            tokensSuggestions : '=ngModel',
             tokensAdd : '&',
             tokensRemove : '&'
           },

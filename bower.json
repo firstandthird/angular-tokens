@@ -9,7 +9,7 @@
   "dependencies": {
     "jquery": "~1.10.0",
     "angular": "~1.0.7",
-    "tokens" : "~0.2.1"
+    "tokens" : "~0.2.2"
   },
   "devDependencies": {
     "assert": "*",
