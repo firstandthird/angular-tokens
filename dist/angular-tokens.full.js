@@ -217,11 +217,11 @@
         return suggestion.toLowerCase().indexOf(queryLowerCase.toLowerCase()) !== -1;
       },
       query : function(query, callback){
-        var queryLower = query.toLowerCase(), self = this;
+        var queryLower = query.toLowerCase();
 
-        var suggestions = $.grep(this.source, function(suggestion){
-          return self.search(suggestion, query, queryLower);
-        });
+        var suggestions = $.grep(this.source, this.proxy(function(suggestion){
+          return this.search(suggestion, query, queryLower);
+        }));
 
         callback.apply(this,[suggestions]);
       },
@@ -254,7 +254,7 @@
       allowAddingNoSuggestion : true,
       cleanInputOnHide : true,
       suggestionsZindex : 999,
-      sources : [],
+      source : [],
       initValue : [],
       minChars : 0
     },
@@ -618,6 +618,11 @@
           },
           link : function(scope, el){
             var $el = $(el);
+            scope.tokensSuggestions = angular.isUndefined(scope.tokensSuggestions) ? [] : scope.tokensSuggestions;
+            scope.tokensSelected = angular.isUndefined(scope.tokensSelected) ? [] : scope.tokensSelected;
+            scope.tokensAdd = scope.tokensAdd || angular.noop;
+            scope.tokensRemove = scope.tokensRemove || angular.noop;
+
 
             $el.tokens({
               source : scope.tokensSuggestions,
