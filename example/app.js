@@ -21,4 +21,11 @@ var MainController = function($scope) {
   $scope.addNew = function(){
     $scope.suggestions.push('Mitsubishi');
   };
+
+  $scope.selected = ['Test'];
+
+  $scope.addRandomValueToModel = function(){
+    var value = "random_" + (Math.random() / +new Date()).toString(36).replace(/[^a-z]+/g, '');
+    $scope.selected.push(value);
+  }
 };
