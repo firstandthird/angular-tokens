@@ -28,4 +28,13 @@ var MainController = function($scope) {
     var value = "random_" + (Math.random() / +new Date()).toString(36).replace(/[^a-z]+/g, '');
     $scope.selected.push(value);
   }
+
+  $scope.$watch('tokenCls', function(newValue, oldValue) {
+    if(newValue === oldValue || typeof newValue !== 'object') return;
+
+    $scope.tokenCls.validate = function(query) {
+      return query.indexOf('_') === -1;
+    }
+  });
+
 };
