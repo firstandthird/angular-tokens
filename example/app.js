@@ -1,4 +1,4 @@
-angular.module('example-app', ['tokens']);
+angular.module('example-app', ['ftTokens']);
 
 var MainController = function($scope) {
   $scope.suggestions = [

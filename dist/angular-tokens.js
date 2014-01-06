@@ -3,11 +3,11 @@
  * angular-tokens - Angular directive for the tokens plugin
  * v0.1.0
  * http://github.com/firstandthird/angular-tokens/
- * copyright First + Third 2013
+ * copyright First + Third 2014
  * MIT License
 */
 (function(){
-  angular.module('tokens',[])
+  angular.module('ftTokens',[])
       .directive('tokens', [function(){
         return {
           restrict: 'A',
