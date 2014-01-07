@@ -8,7 +8,7 @@
   "main": "dist/angular-tokens.js",
   "dependencies": {
     "jquery": "~1.10.0",
-    "angular": "~1.0.7",
+    "angular": "~1.2.0",
     "tokens" : "~0.4.0"
   },
   "devDependencies": {
