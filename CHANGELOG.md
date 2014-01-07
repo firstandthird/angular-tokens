@@ -1,4 +1,11 @@
 
+0.2.0 / 2014-01-07 
+==================
+
+  * added tokens-validate attribute
+  * updated angular version
+  * Renamed module to ftTokens
+
 0.1.0 / 2013-11-07 
 ==================
 

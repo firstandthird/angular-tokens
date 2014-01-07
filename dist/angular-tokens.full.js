@@ -1,7 +1,7 @@
 
 /*!
  * angular-tokens - Angular directive for the tokens plugin
- * v0.1.0
+ * v0.2.0
  * http://github.com/firstandthird/angular-tokens/
  * copyright First + Third 2014
  * MIT License
@@ -198,9 +198,9 @@
 
 /*!
  * tokens - jQuery plugin that turns a text field into a tokenized autocomplete
- * v0.2.6
+ * v0.4.0
  * https://github.com/firstandthird/tokens/
- * copyright First + Third 2013
+ * copyright First + Third 2014
  * MIT License
 */
 (function($){
@@ -226,6 +226,9 @@
 
         callback.apply(this,[suggestions]);
       },
+      validate : function(query) {
+        return true;
+      },
       keyCode : {
         UP : 38,
         DOWN : 40,
@@ -233,13 +236,15 @@
         TAB: 9,
         ENTER : 13,
         ESC : 27,
-        COMMA : 188
+        COMMA : 188,
+        SPACE: 32
       },
       texts : {
         'close-text' : '×',
         'type-suggestions' : 'Type to search values',
         'no-results' : 'There are no results matching',
-        'add-result' : 'Add "%s" to the list'
+        'add-result' : 'Add "%s" to the list',
+        'invalid-format' : '%s is not the correct format'
       },
       cssClasses : {
         'token-list' : 'tokens-token-list',
@@ -336,6 +341,7 @@
         case this.keyCode.TAB:
         case this.keyCode.ENTER:
         case this.keyCode.COMMA:
+        case this.keyCode.SPACE:
           this._selectSuggestion();
           break;
         case this.keyCode.BACKSPACE:
@@ -423,7 +429,11 @@
             }
           }
           else {
-            this._addTextToSuggestions(this.texts['add-result'].replace('%s',this.suggestionValue));
+            if(this.validate(this.suggestionValue)) {
+              this._addTextToSuggestions(this.texts['add-result'].replace('%s',this.suggestionValue));
+            } else {
+              this._addTextToSuggestions(this.texts['invalid-format'].replace('%s',this.suggestionValue));
+            }
           }
         }
       });
@@ -458,7 +468,7 @@
       }
       else if (this.allowAddingNoSuggestion){
         var val = $.trim(this.inputText.val());
-        if (val){
+        if (val && this.validate(val)){
           this.addValue(val);
         }
       }
@@ -627,12 +637,14 @@
             tokensSuggestions : '=',
             tokensSelected : '=ngModel',
             tokensAdd : '&',
-            tokensRemove : '&'
+            tokensRemove : '&',
+            tokensValidate: '&'
           },
-          link : function(scope, el){
+          link : function(scope, el, attrs){
             var $el = $(el),
                 addCallback = scope.tokensAdd || angular.noop,
-                removeCallback = scope.tokensRemove || angular.noop;
+                removeCallback = scope.tokensRemove || angular.noop,
+                validateCallback = scope.tokensValidate || angular.noop;
 
             $el.tokens({
               source : scope.tokensSuggestions || [],
@@ -688,6 +700,12 @@
             scope.$watch('tokensSuggestions',function(){
               scope.tokens.source = scope.tokensSuggestions || [];
             },true);
+
+            if (attrs.tokensValidate) {
+              scope.tokens.validate = function(query) {
+                return validateCallback({ query: query });
+              };
+            }
           }
         };
       }]);

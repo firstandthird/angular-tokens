@@ -1,7 +1,7 @@
 
 /*!
  * angular-tokens - Angular directive for the tokens plugin
- * v0.1.0
+ * v0.2.0
  * http://github.com/firstandthird/angular-tokens/
  * copyright First + Third 2014
  * MIT License
@@ -15,12 +15,14 @@
             tokensSuggestions : '=',
             tokensSelected : '=ngModel',
             tokensAdd : '&',
-            tokensRemove : '&'
+            tokensRemove : '&',
+            tokensValidate: '&'
           },
-          link : function(scope, el){
+          link : function(scope, el, attrs){
             var $el = $(el),
                 addCallback = scope.tokensAdd || angular.noop,
-                removeCallback = scope.tokensRemove || angular.noop;
+                removeCallback = scope.tokensRemove || angular.noop,
+                validateCallback = scope.tokensValidate || angular.noop;
 
             $el.tokens({
               source : scope.tokensSuggestions || [],
@@ -76,6 +78,12 @@
             scope.$watch('tokensSuggestions',function(){
               scope.tokens.source = scope.tokensSuggestions || [];
             },true);
+
+            if (attrs.tokensValidate) {
+              scope.tokens.validate = function(query) {
+                return validateCallback({ query: query });
+              };
+            }
           }
         };
       }]);
