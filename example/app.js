@@ -29,12 +29,8 @@ var MainController = function($scope) {
     $scope.selected.push(value);
   }
 
-  $scope.$watch('tokenCls', function(newValue, oldValue) {
-    if(newValue === oldValue || typeof newValue !== 'object') return;
-
-    $scope.tokenCls.validate = function(query) {
-      return query.indexOf('_') === -1;
-    }
-  });
+  $scope.validate = function(query) {
+    return (query.indexOf('_') === -1);
+  }
 
 };

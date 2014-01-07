@@ -10,12 +10,19 @@
     <script src="../bower_components/fidel/dist/fidel.min.js"></script>
     <script src="../bower_components/tokens/dist/fidel.tokens.js"></script>
     <script src="app.js"></script>
+    <style>
+      body {
+        font-family: Arial;
+      }
+    </style>
   </head>
   <body>
     <div ng-controller="MainController">
-      <input type="text" tokens="tokenCls" tokens-add="addTest()" tokens-remove="removeTest()" ng-model="selected"/>
+      <input type="text" tokens tokens-add="addTest()" tokens-remove="removeTest()" ng-model="selected"/>
+      <p>With Validation (no _ )</p>
+      <input type="text" tokens tokens-validate="validate(query)" tokens-add="addTest()" tokens-remove="removeTest()" ng-model="selected"/>
 
-		<button ng-click="addRandomValueToModel()">Add randon value to model</button>
+      <button ng-click="addRandomValueToModel()">Add randon value to model</button>
     </div>
   </body>
 </html>
