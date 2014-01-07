@@ -3,14 +3,14 @@
  * angular-tokens - Angular directive for the tokens plugin
  * v0.1.0
  * http://github.com/firstandthird/angular-tokens/
- * copyright First + Third 2013
+ * copyright First + Third 2014
  * MIT License
 */
 /*!
  * fidel - a ui view controller
- * v2.2.3
+ * v2.2.5
  * https://github.com/jgallen23/fidel
- * copyright Greg Allen 2013
+ * copyright Greg Allen 2014
  * MIT License
 */
 (function(w, $) {
@@ -22,6 +22,7 @@
   Fidel.prototype.__init = function(options) {
     $.extend(this, this.obj);
     this.id = _id++;
+    this.namespace = '.fidel' + this.id;
     this.obj.defaults = this.obj.defaults || {};
     $.extend(this, this.obj.defaults, options);
     $('body').trigger('FidelPreInit', this);
@@ -36,8 +37,8 @@
   Fidel.prototype.setElement = function(el) {
     this.el = el;
     this.getElements();
-    this.delegateEvents();
     this.dataElements();
+    this.delegateEvents();
     this.delegateActions();
   };
 
@@ -69,7 +70,6 @@
   };
 
   Fidel.prototype.delegateEvents = function() {
-    var self = this;
     if (!this.events)
       return;
     for (var key in this.events) {
@@ -80,12 +80,12 @@
       var method = this.proxy(this[methodName]);
 
       if (selector === '') {
-        this.el.on(eventName, method);
+        this.el.on(eventName + this.namespace, method);
       } else {
         if (this[selector] && typeof this[selector] != 'function') {
-          this[selector].on(eventName, method);
+          this[selector].on(eventName + this.namespace, method);
         } else {
-          this.el.on(eventName, selector, method);
+          this.el.on(eventName + this.namespace, selector, method);
         }
       }
     }
@@ -93,7 +93,7 @@
 
   Fidel.prototype.delegateActions = function() {
     var self = this;
-    self.el.on('click', '[data-action]', function(e) {
+    self.el.on('click'+this.namespace, '[data-action]', function(e) {
       var el = $(this);
       var action = el.attr('data-action');
       if (self[action]) {
@@ -103,15 +103,15 @@
   };
 
   Fidel.prototype.on = function(eventName, cb) {
-    this.el.on(eventName+'.fidel'+this.id, cb);
+    this.el.on(eventName+this.namespace, cb);
   };
 
   Fidel.prototype.one = function(eventName, cb) {
-    this.el.one(eventName+'.fidel'+this.id, cb);
+    this.el.one(eventName+this.namespace, cb);
   };
 
   Fidel.prototype.emit = function(eventName, data, namespaced) {
-    var ns = (namespaced) ? '.fidel'+this.id : '';
+    var ns = (namespaced) ? this.namespace : '';
     this.el.trigger(eventName+ns, data);
   };
 
@@ -135,7 +135,7 @@
   Fidel.prototype.destroy = function() {
     this.el.empty();
     this.emit('destroy');
-    this.el.unbind('.fidel'+this.id);
+    this.el.unbind(this.namespace);
   };
 
   Fidel.declare = function(obj) {
@@ -198,7 +198,7 @@
 
 /*!
  * tokens - jQuery plugin that turns a text field into a tokenized autocomplete
- * v0.2.4
+ * v0.2.6
  * https://github.com/firstandthird/tokens/
  * copyright First + Third 2013
  * MIT License
@@ -232,12 +232,14 @@
         BACKSPACE : 8,
         TAB: 9,
         ENTER : 13,
-        ESC : 27
+        ESC : 27,
+        COMMA : 188
       },
       texts : {
         'close-text' : '×',
         'type-suggestions' : 'Type to search values',
-        'no-results' : 'There are no results matching'
+        'no-results' : 'There are no results matching',
+        'add-result' : 'Add "%s" to the list'
       },
       cssClasses : {
         'token-list' : 'tokens-token-list',
@@ -333,6 +335,7 @@
           break;
         case this.keyCode.TAB:
         case this.keyCode.ENTER:
+        case this.keyCode.COMMA:
           this._selectSuggestion();
           break;
         case this.keyCode.BACKSPACE:
@@ -358,7 +361,7 @@
       this._activateSuggestion(target.data('index'));
     },
     _suggestionChanged : function(){
-      var value = $.trim(this.inputText.val());
+      var value = this.inputText.val();
 
       if (value !== this.suggestionValue){
         this.inputText.val(value);
@@ -413,8 +416,15 @@
           this.suggestionsHolder.empty().append(html);
           this._showSuggestions();
         }
-        else if (this.source.length) {
-          this._addTextToSuggestions(this.texts['no-results']);
+        else if (this.showMessageOnNoResults) {
+          if (!this.allowAddingNoSuggestion){
+            if (this.source.length){
+              this._addTextToSuggestions(this.texts['no-results']);
+            }
+          }
+          else {
+            this._addTextToSuggestions(this.texts['add-result'].replace('%s',this.suggestionValue));
+          }
         }
       });
     },
@@ -609,7 +619,7 @@
 })(jQuery);
 
 (function(){
-  angular.module('tokens',[])
+  angular.module('ftTokens',[])
       .directive('tokens', [function(){
         return {
           restrict: 'A',
