@@ -7,9 +7,9 @@
   "copyright": "First + Third",
   "main": "dist/angular-tokens.js",
   "dependencies": {
-    "jquery": "~1.10.0",
-    "angular": "~1.2.0",
-    "tokens" : "~0.4.0"
+    "jquery": "~2.1.3",
+    "angular": "~1.3.15",
+    "tokens" : "~0.6.0"
   },
   "devDependencies": {
     "assert": "*",

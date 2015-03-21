@@ -1,6 +1,6 @@
-angular.module('example-app', ['ftTokens']);
-
-var MainController = function($scope) {
+angular
+.module('example-app', ['ftTokens'])
+.controller('MainController', function($scope) {
   $scope.suggestions = [
     'Acura', 'Audi', 'BMW', 'Cadillac',
     'Chrysler', 'Dodge', 'Ferrari', 'Ford',
@@ -27,10 +27,9 @@ var MainController = function($scope) {
   $scope.addRandomValueToModel = function(){
     var value = "random_" + (Math.random() / +new Date()).toString(36).replace(/[^a-z]+/g, '');
     $scope.selected.push(value);
-  }
+  };
 
   $scope.validate = function(query) {
     return (query.indexOf('_') === -1);
-  }
-
-};
+  };
+});
